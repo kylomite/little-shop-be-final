@@ -15,10 +15,3 @@ system(cmd)
 system("rails db:migrate")
 
 Coupon.create(name: "test", code: "bogo", value_off: 15, percent_off: true, active: true, merchant_id: 1)
-
-t.string :name
-t.string :code
-t.integer :value_off
-t.boolean :percent_off
-t.boolean :active
-t.belongs_to :merchant, null: false, foreign_key: true
