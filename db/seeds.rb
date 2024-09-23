@@ -10,9 +10,16 @@
 cmd = "pg_restore --verbose --clean --no-acl --no-owner -h localhost -U $(whoami) -d little_shop_development db/data/little_shop_development.pgdump"
 puts "Loading PostgreSQL Data dump into local database with command:"
 
-# system("rails db:seed")
+system("rails db:seed")
 
-# Coupon.create()
+Coupon.create(
+    # merchant_id: 
+    # name: "summer-sale",
+    # code: "BOGO",
+    # value_off: 45,
+    # percent_off: false,
+    # active: true
+)
 
 puts cmd
 system(cmd)
