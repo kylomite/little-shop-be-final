@@ -91,7 +91,37 @@ describe "Coupon endpoints", :type => :request do
 
     describe "#create" do
         describe "HAPPY path" do
+            it "creates a new instance of a coupon" do
+                couponParams = {
+                    name: "test name",
+                    code: "unique code",
+                    value_off: 15,
+                    percent_off: false,
+                    active: true,
+                    merchant_id: @merchantsList[0].id
+                }
 
+                headers = { "CONTENT_TYPE" => "application/json" }
+
+                post "/api/v1/coupons/new", headers: headers, params: JSON.generate(coupon: couponParams)
+
+                testCoupon = Coupon.last
+
+                expect(response).to be_successful
+                # expect(testCoupon.id).to eq()
+                expect(testCoupon.name).to eq("test name")
+                expect(testCoupon.code).to eq("unique code")
+                expect(testCoupon.value_off).to eq(15)
+                expect(testCoupon.percent_off).to eq(false)
+                expect(testCoupon.active).to eq(true)
+                expect(testCoupon.merchant_id).to eq(@merchantsList[0].id)
+
+                expect {
+                    post "/api/v1/coupons/new", headers: headers, params: JSON.generate(coupon: couponParams)
+                }.to change(Coupon.all.count).by(1)
+
+
+            end
         end
 
         describe "SAD path" do
