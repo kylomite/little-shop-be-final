@@ -57,15 +57,15 @@ describe "Coupon endpoints", :type => :request do
                 expect(response).to be_successful
                 
                 coupon1 = JSON.parse(response.body, symbolize_names: true)
-                    
-                expect(coupon1[:id]).to eq(@couponsList[0].id)
-                expect(coupon1[:type]).to eq("coupon")
 
-                expect(coupon1[:attributes][:name]).to eq(@couponsList[0].name)
-                expect(coupon1[:attributes][:code]).to eq(@couponsList[0].code)
-                expect(coupon1[:attributes][:value_off]).to eq(@couponsList[0].value_off)
-                expect(coupon1[:attributes][:percent_off]).to eq(@couponsList[0].percent_off)
-                expect(coupon1[:attributes][:active]).to eq(@couponsList[0].active)
+                expect(coupon1[:data][:id]).to eq(@couponsList[0].id.to_s)
+                expect(coupon1[:data][:type]).to eq("coupon")
+
+                expect(coupon1[:data][:attributes][:name]).to eq(@couponsList[0].name)
+                expect(coupon1[:data][:attributes][:code]).to eq(@couponsList[0].code)
+                expect(coupon1[:data][:attributes][:value_off]).to eq(@couponsList[0].value_off)
+                expect(coupon1[:data][:attributes][:percent_off]).to eq(@couponsList[0].percent_off)
+                expect(coupon1[:data][:attributes][:active]).to eq(@couponsList[0].active)
 
                 get "/api/v1/coupons/#{@couponsList[1].id}"
 
@@ -73,14 +73,14 @@ describe "Coupon endpoints", :type => :request do
                 
                 coupon2 = JSON.parse(response.body, symbolize_names: true)
                     
-                expect(coupon2[:id]).to eq(@couponsList[1].id)
-                expect(coupon2[:type]).to eq("coupon")
+                expect(coupon2[:data][:id]).to eq(@couponsList[1].id.to_s)
+                expect(coupon2[:data][:type]).to eq("coupon")
 
-                expect(coupon2[:attributes][:name]).to eq(@couponsList[1].name)
-                expect(coupon2[:attributes][:code]).to eq(@couponsList[1].code)
-                expect(coupon2[:attributes][:value_off]).to eq(@couponsList[1].value_off)
-                expect(coupon2[:attributes][:percent_off]).to eq(@couponsList[1].percent_off)
-                expect(coupon2[:attributes][:active]).to eq(@couponsList[1].active)
+                expect(coupon2[:data][:attributes][:name]).to eq(@couponsList[1].name)
+                expect(coupon2[:data][:attributes][:code]).to eq(@couponsList[1].code)
+                expect(coupon2[:data][:attributes][:value_off]).to eq(@couponsList[1].value_off)
+                expect(coupon2[:data][:attributes][:percent_off]).to eq(@couponsList[1].percent_off)
+                expect(coupon2[:data][:attributes][:active]).to eq(@couponsList[1].active)
         end
         end
 
