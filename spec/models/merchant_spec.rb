@@ -88,5 +88,108 @@ describe Merchant, type: :model do
       expect(merchant.invoices_filtered_by_status("returned")).to eq([inv_5_returned])
       expect(other_merchant.invoices_filtered_by_status("packaged")).to eq([inv_4_packaged])
     end
+    describe "#coupon_count" do
+      it "returns a count for all the coupons for a given merchant" do
+        merchant = create(:merchant)
+        Coupon.create(
+          ({
+              name: "Winter Sale",
+              code: "gfddfgfasy",
+              value_off: 15,
+              percent_off: true,
+              active: false,
+              use_count: 0,
+              merchant_id: merchant.id
+          })
+        )
+
+        Coupon.create(
+          ({
+              name: "Winter Sale",
+              code: "gappapy",
+              value_off: 15,
+              percent_off: true,
+              active: false,
+              use_count: 0,
+              merchant_id: merchant.id
+          })
+        )
+
+        Coupon.create(
+          ({
+              name: "Winter Sale",
+              code: "qwertyuio",
+              value_off: 15,
+              percent_off: true,
+              active: false,
+              use_count: 0,
+              merchant_id: merchant.id
+          })
+        )
+        expect(merchant.coupon_count).to eq(3)
+      end
+    end
+
+    describe "#invoice_coupon_count" do
+      it "returns a count for all invoices with coupons applied for a given merchant" do
+        customer = create(:customer)
+        merchant = create(:merchant)
+        coupon1 = Coupon.create(
+          ({
+              name: "Winter Sale",
+              code: "gfddfgfasy",
+              value_off: 15,
+              percent_off: true,
+              active: false,
+              use_count: 0,
+              merchant_id: merchant.id
+          })
+        )
+
+        coupon2 = Coupon.create(
+          ({
+              name: "Winter Sale",
+              code: "gappapy",
+              value_off: 15,
+              percent_off: true,
+              active: false,
+              use_count: 0,
+              merchant_id: merchant.id
+          })
+        )
+
+        coupon3 = Coupon.create(
+          ({
+              name: "Winter Sale",
+              code: "qwertyuio",
+              value_off: 15,
+              percent_off: true,
+              active: false,
+              use_count: 0,
+              merchant_id: merchant.id
+          })
+        )
+
+        Invoice.create(
+          {
+            customer_id: customer.id,
+            merchant_id: merchant.id,
+            coupon_id: coupon1.id,
+            status: "packaged"
+          }
+        )
+
+        Invoice.create(
+          {
+            customer_id: customer.id,
+            merchant_id: merchant.id,
+            coupon_id: coupon2.id,
+            status: "shipped"
+          }
+        )
+
+        expect(merchant.invoice_coupon_count).to eq(2)
+      end
+    end
   end
 end
