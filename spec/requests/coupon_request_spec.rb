@@ -92,7 +92,7 @@ describe "Coupon endpoints", :type => :request do
     describe "#create" do
         describe "HAPPY path" do
             it "creates a new instance of a coupon" do
-                couponParams = {
+                coupon_params = {
                     name: "test name",
                     code: "unique code",
                     value_off: 15,
@@ -103,12 +103,12 @@ describe "Coupon endpoints", :type => :request do
 
                 headers = { "CONTENT_TYPE" => "application/json" }
 
-                post "/api/v1/coupons/new", headers: headers, params: JSON.generate(coupon: couponParams)
+                post "/api/v1/coupons", headers: headers, params: JSON.generate(coupon: coupon_params)
 
                 testCoupon = Coupon.last
 
                 expect(response).to be_successful
-                # expect(testCoupon.id).to eq()
+                
                 expect(testCoupon.name).to eq("test name")
                 expect(testCoupon.code).to eq("unique code")
                 expect(testCoupon.value_off).to eq(15)
@@ -117,8 +117,8 @@ describe "Coupon endpoints", :type => :request do
                 expect(testCoupon.merchant_id).to eq(@merchantsList[0].id)
 
                 expect {
-                    post "/api/v1/coupons/new", headers: headers, params: JSON.generate(coupon: couponParams)
-                }.to change(Coupon.all.count).by(1)
+                    post "/api/v1/coupons", headers: headers, params: JSON.generate(coupon: coupon_params)
+                }.to change { Coupon.count }.by(1)
 
 
             end
