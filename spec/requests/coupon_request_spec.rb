@@ -153,11 +153,60 @@ describe "Coupon endpoints", :type => :request do
             end
 
             it "activates a coupon when specified" do
-                
+                inactive_coupon = Coupon.create(
+                    ({
+                        name: "Summer Sale",
+                        code: "Bingo",
+                        value_off: 15,
+                        percent_off: true,
+                        active: false,
+                        use_count: 0,
+                        merchant_id: @merchants_list.sample.id
+                    })
+                )
+
+                headers = { "CONTENT_TYPE" => "application/json"}
+
+                patch "/api/v1/coupons/#{inactive_coupon.id}?toggle_active=true", headers: headers
+                puts response.status
+                expect(response).to be_successful
+
+                activated_coupon = JSON.parse(response.body, symbolize_names: true)
+
+                expect(activated_coupon[:data][:type]).to eq ("coupon")
+                expect(activated_coupon[:data][:attributes][:active]). to eq(true)
+
+                updated_coupon = Coupon.find_by(id: inactive_coupon.id)
+                expect(updated_coupon.active).to_not eq(inactive_coupon.active)
+                expect(updated_coupon.active).to eq(true)
             end
             
             it "deactivates a coupon when specified" do
+                active_coupon = Coupon.create(
+                    ({
+                        name: "Summer Sale",
+                        code: "Bingo",
+                        value_off: 15,
+                        percent_off: true,
+                        active: true,
+                        use_count: 0,
+                        merchant_id: @merchants_list.sample.id
+                    })
+                )
+                headers = { "CONTENT_TYPE" => "application/json"}
 
+                patch "/api/v1/coupons/#{active_coupon.id}?toggle_active=true", headers: headers
+                puts response.status
+                expect(response).to be_successful
+
+                deactivated_coupon = JSON.parse(response.body, symbolize_names: true)
+
+                expect(deactivated_coupon[:data][:type]).to eq ("coupon")
+                expect(deactivated_coupon[:data][:attributes][:active]). to eq(false)
+
+                updated_coupon = Coupon.find_by(id: active_coupon.id)
+                expect(updated_coupon.active).to_not eq(active_coupon.active)
+                expect(updated_coupon.active).to eq(false)
             end
         end
         describe "SAD path" do

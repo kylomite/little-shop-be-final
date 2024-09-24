@@ -17,9 +17,14 @@ class Api::V1::CouponsController < ApplicationController
 
     def update
         updatable_coupon = Coupon.find(params[:id])
-        updatable_coupon.update(coupon_params)
-        render json: CouponSerializer.new(updatable_coupon)
 
+        if params[:toggle_active] == "true"
+            updatable_coupon.toggle_active
+        else 
+            updatable_coupon.update(coupon_params)
+        end
+
+        render json: CouponSerializer.new(updatable_coupon)
     end
 
     private
