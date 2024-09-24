@@ -5,7 +5,6 @@ describe "Coupon endpoints", :type => :request do
         Merchant.destroy_all
         Coupon.destroy_all
         @merchants_list = create_list(:merchant, 9)
-        # binding.pry
 
         @coupons_list = build_list(:coupon, 5) do |coupon|
             coupon.merchant_id =  @merchants_list.sample.id
@@ -39,6 +38,7 @@ describe "Coupon endpoints", :type => :request do
                     expect(coupon[:attributes][:value_off]).to be_a(Integer)
                     expect(coupon[:attributes][:percent_off]).to be_in([true, false])
                     expect(coupon[:attributes][:active]).to be_in([true, false])
+                    expect(coupon[:attributes][:use_count]).to be_a(Integer)
                 end
             end
         end
@@ -66,6 +66,7 @@ describe "Coupon endpoints", :type => :request do
                 expect(coupon1[:data][:attributes][:value_off]).to eq(@coupons_list[0].value_off)
                 expect(coupon1[:data][:attributes][:percent_off]).to eq(@coupons_list[0].percent_off)
                 expect(coupon1[:data][:attributes][:active]).to eq(@coupons_list[0].active)
+                expect(coupon1[:data][:attributes][:use_count]).to be_a(Integer)
 
                 get "/api/v1/coupons/#{@coupons_list[1].id}"
 
@@ -81,6 +82,7 @@ describe "Coupon endpoints", :type => :request do
                 expect(coupon2[:data][:attributes][:value_off]).to eq(@coupons_list[1].value_off)
                 expect(coupon2[:data][:attributes][:percent_off]).to eq(@coupons_list[1].percent_off)
                 expect(coupon2[:data][:attributes][:active]).to eq(@coupons_list[1].active)
+                expect(coupon2[:data][:attributes][:use_count]).to be_a(Integer)
             end
         end
 
@@ -98,7 +100,8 @@ describe "Coupon endpoints", :type => :request do
                     value_off: 15,
                     percent_off: false,
                     active: true,
-                    merchant_id: @merchants_list[0].id
+                    merchant_id: @merchants_list[0].id,
+                    use_count: 4
                 }
 
                 headers = { "CONTENT_TYPE" => "application/json" }
@@ -115,6 +118,7 @@ describe "Coupon endpoints", :type => :request do
                 expect(testCoupon.percent_off).to eq(false)
                 expect(testCoupon.active).to eq(true)
                 expect(testCoupon.merchant_id).to eq(@merchants_list[0].id)
+                expect(testCoupon.use_count).to eq(4)
 
                 expect {
                     post "/api/v1/coupons", headers: headers, params: JSON.generate(coupon: coupon_params)
@@ -147,15 +151,14 @@ describe "Coupon endpoints", :type => :request do
                 expect(updated_coupon.name).to_not eq(old_coupon.name)
                 expect(updated_coupon.name).to eq("New Coupon")
             end
-        end
-        describe "SAD path" do
+
+            it "activates a coupon when specified" do
+                
+            end
             
-        end
-    end
+            it "deactivates a coupon when specified" do
 
-    describe "#destroy" do
-        describe "HAPPY path" do
-
+            end
         end
         describe "SAD path" do
             

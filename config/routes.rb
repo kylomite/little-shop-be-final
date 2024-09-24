@@ -25,7 +25,7 @@ Rails.application.routes.draw do
         resources :customers, only: :index, controller: "merchants/customers"
         resources :invoices, only: :index, controller: "merchants/invoices"
       end
-      resources :coupons
+      resources :coupons, except: [:new, :destroy]
     end
   end
 end

@@ -6,5 +6,6 @@ FactoryBot.define do
       percent_off { Faker::Boolean.boolean}
       active { Faker::Boolean.boolean}
       merchant_id { "" }
+      use_count { Faker::Number.between(from: 0, to: 10) }
     end
   end
