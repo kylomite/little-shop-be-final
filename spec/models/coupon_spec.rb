@@ -1,7 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Coupon do
-    it { should belong_to :merchant }
+    describe "relationships" do
+        it { should have_many :invoices }
+    end
 
     describe "Instance methods" do
         describe "#toggle_active" do
@@ -12,7 +14,7 @@ RSpec.describe Coupon do
                 active_coupon = Coupon.create(
                     ({
                         name: "Summer Sale",
-                        code: "Bingo",
+                        code: "patsqanny",
                         value_off: 15,
                         percent_off: true,
                         active: true,
@@ -33,6 +35,74 @@ RSpec.describe Coupon do
     end
 
     describe "Class methods" do
+        describe ".sorted_by_active" do
+            it "can sort coupons showing active coupons first" do
+
+                merchant = Merchant.create(name: "test merchant")
+
+                Coupon.create(
+                    ({
+                        name: "Summer Sale",
+                        code: "asdfdsfsdf",
+                        value_off: 15,
+                        percent_off: true,
+                        active: true,
+                        use_count: 0,
+                        merchant_id: merchant.id
+                    })
+                )
+
+                Coupon.create(
+                    ({
+                        name: "Winter Sale",
+                        code: "gfddfgfasy",
+                        value_off: 15,
+                        percent_off: true,
+                        active: false,
+                        use_count: 0,
+                        merchant_id: merchant.id
+                    })
+                )
+                sorted_list = Coupon.all.sorted_by_active("active")
+                
+                expect(sorted_list[0][:active]).to eq (true)
+                expect(sorted_list[-1][:active]).to eq (false)
+            end
+
+            it "can sort coupons showing inactive coupons first" do
+                
+                merchant = Merchant.create(name: "test merchant")
+
+                Coupon.create(
+                    ({
+                        name: "Summer Sale",
+                        code: "asdfdsfsdf",
+                        value_off: 15,
+                        percent_off: true,
+                        active: true,
+                        use_count: 0,
+                        merchant_id: merchant.id
+                    })
+                )
+
+                Coupon.create(
+                    ({
+                        name: "Winter Sale",
+                        code: "gfddfgfasy",
+                        value_off: 15,
+                        percent_off: true,
+                        active: false,
+                        use_count: 0,
+                        merchant_id: merchant.id
+                    })
+                )
+
+                sorted_list = Coupon.all.sorted_by_active("inactive")
+                
+                expect(sorted_list[0][:active]).to eq (false)
+                expect(sorted_list[-1][:active]).to eq (true)
+            end
+        end
 
     end
 end

@@ -41,6 +41,27 @@ describe "Coupon endpoints", :type => :request do
                     expect(coupon[:attributes][:use_count]).to be_a(Integer)
                 end
             end
+
+            it "returns a list of coupons sorted by active status" do
+                get "/api/v1/coupons?sort=active"
+
+                expect(response).to be_successful
+
+                coupons = JSON.parse(response.body, symbolize_names: true)
+
+                expect(coupons[:data][0][:attributes][:active]).to eq(true)
+                expect(coupons[:data][-1][:attributes][:active]).to eq(false)
+
+                get "/api/v1/coupons?sort=inactive"
+
+                expect(response).to be_successful
+
+                coupons = JSON.parse(response.body, symbolize_names: true)
+                
+                expect(coupons[:data][0][:attributes][:active]).to eq(false)
+                expect(coupons[:data][-1][:attributes][:active]).to eq(true)
+            end
+
         end
 
         describe "SAD path" do
@@ -96,7 +117,7 @@ describe "Coupon endpoints", :type => :request do
             it "creates a new instance of a coupon" do
                 coupon_params = {
                     name: "test name",
-                    code: "unique code",
+                    code: "ASDFGHJ4567",
                     value_off: 15,
                     percent_off: false,
                     active: true,
@@ -106,6 +127,10 @@ describe "Coupon endpoints", :type => :request do
 
                 headers = { "CONTENT_TYPE" => "application/json" }
 
+                expect {
+                    post "/api/v1/coupons", headers: headers, params: JSON.generate(coupon: coupon_params)
+                }.to change { Coupon.count }.by(1)
+
                 post "/api/v1/coupons", headers: headers, params: JSON.generate(coupon: coupon_params)
 
                 testCoupon = Coupon.last
@@ -113,16 +138,13 @@ describe "Coupon endpoints", :type => :request do
                 expect(response).to be_successful
 
                 expect(testCoupon.name).to eq("test name")
-                expect(testCoupon.code).to eq("unique code")
+                expect(testCoupon.code).to eq("ASDFGHJ4567")
                 expect(testCoupon.value_off).to eq(15)
                 expect(testCoupon.percent_off).to eq(false)
                 expect(testCoupon.active).to eq(true)
                 expect(testCoupon.merchant_id).to eq(@merchants_list[0].id)
                 expect(testCoupon.use_count).to eq(4)
 
-                expect {
-                    post "/api/v1/coupons", headers: headers, params: JSON.generate(coupon: coupon_params)
-                }.to change { Coupon.count }.by(1)
             end
         end
 
@@ -156,7 +178,7 @@ describe "Coupon endpoints", :type => :request do
                 inactive_coupon = Coupon.create(
                     ({
                         name: "Summer Sale",
-                        code: "Bingo",
+                        code: "YE2024 FR",
                         value_off: 15,
                         percent_off: true,
                         active: false,
@@ -168,7 +190,6 @@ describe "Coupon endpoints", :type => :request do
                 headers = { "CONTENT_TYPE" => "application/json"}
 
                 patch "/api/v1/coupons/#{inactive_coupon.id}?toggle_active=true", headers: headers
-                puts response.status
                 expect(response).to be_successful
 
                 activated_coupon = JSON.parse(response.body, symbolize_names: true)
@@ -185,7 +206,7 @@ describe "Coupon endpoints", :type => :request do
                 active_coupon = Coupon.create(
                     ({
                         name: "Summer Sale",
-                        code: "Bingo",
+                        code: "Sum2024 FR",
                         value_off: 15,
                         percent_off: true,
                         active: true,
@@ -196,7 +217,6 @@ describe "Coupon endpoints", :type => :request do
                 headers = { "CONTENT_TYPE" => "application/json"}
 
                 patch "/api/v1/coupons/#{active_coupon.id}?toggle_active=true", headers: headers
-                puts response.status
                 expect(response).to be_successful
 
                 deactivated_coupon = JSON.parse(response.body, symbolize_names: true)

@@ -1,6 +1,9 @@
 class Api::V1::CouponsController < ApplicationController
     def index
         coupons = Coupon.all
+        if params[:sort] == "active" || params[:sort] == "inactive"
+            coupons = coupons.sorted_by_active(params[:sort])
+        end
 
         render json: CouponSerializer.new(coupons).serializable_hash.to_json, status: :ok
     end
