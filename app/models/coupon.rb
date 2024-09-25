@@ -11,4 +11,12 @@ class Coupon < ApplicationRecord
             save
         end
     end
+
+    def self.sorted_by_active(sort_by)
+        if sort_by == "active"
+            order(active: :desc)
+        else
+            order(active: :asc)
+        end
+    end
 end

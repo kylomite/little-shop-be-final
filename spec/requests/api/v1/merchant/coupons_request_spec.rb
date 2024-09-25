@@ -44,6 +44,26 @@ describe "Coupon endpoints", :type => :request do
                     expect(coupon[:attributes][:use_count]).to be_a(Integer)
                 end
             end
+
+            it "returns all coupons for a given merchant sorted by active or inactive" do
+                get "/api/v1/merchants/#{@merchants_list[4].id}/coupons?sort=active"
+
+                expect(response).to be_successful
+
+                coupons = JSON.parse(response.body, symbolize_names: true)
+
+                expect(coupons[:data].first[:attributes][:active]).to eq(true)
+                expect(coupons[:data].last[:attributes][:active]).to eq(false)
+
+                get "/api/v1/merchants/#{@merchants_list[4].id}/coupons?sort=inactive"
+
+                expect(response).to be_successful
+
+                coupons = JSON.parse(response.body, symbolize_names: true)
+                
+                expect(coupons[:data].first[:attributes][:active]).to eq(false)
+                expect(coupons[:data].last[:attributes][:active]).to eq(true)
+            end
         end
 
         describe "SAD path" do
@@ -165,7 +185,7 @@ describe "Coupon endpoints", :type => :request do
                 expect(activated_coupon[:data][:attributes][:active]). to eq(false)
 
                 @coupon5.reload
-                
+
                 expect(@coupon5.active).to eq(false)
             end
         end
