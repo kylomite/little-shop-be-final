@@ -14,12 +14,12 @@ system(cmd)
 
 system("rails db:migrate")
 
-Coupon.create(name: "Summer Sale", code: "12345", value_off: 15, percent_off: true, active: true, merchant_id: 1)
-Coupon.create(name: "Sweepstakes", code: "qwerty", value_off: 30, percent_off: true, active: false, merchant_id: 1)
+coupon1 = Coupon.create(name: "Summer Sale", code: "12345", value_off: 15, percent_off: true, active: true, merchant_id: 1)
+coupon2 = Coupon.create(name: "Sweepstakes", code: "qwerty", value_off: 30, percent_off: true, active: false, merchant_id: 1)
 Coupon.create(name: "Fall Sale", code: "asdfg", value_off: 65, percent_off: false, active: true, merchant_id: 1)
-Coupon.create(name: "Winter Sale", code: "zxcvb", value_off: 25, percent_off: true, active: true, merchant_id: 2)
+coupon4 = Coupon.create(name: "Winter Sale", code: "zxcvb", value_off: 25, percent_off: true, active: true, merchant_id: 2)
 Coupon.create(name: "Spring Sale", code: "poiuy", value_off: 15, percent_off: false, active: false, merchant_id: 2)
-Coupon.create(name: "Birthday Special", code: "lkjhg", value_off: 50, percent_off: true, active: true, merchant_id: 3)
+coupon6 = Coupon.create(name: "Birthday Special", code: "lkjhg", value_off: 50, percent_off: true, active: true, merchant_id: 3)
 Coupon.create(name: "Summer Sale", code: "mnbvc", value_off: 15, percent_off: true, active: true, merchant_id: 4)
 Coupon.create(name: "Sweepstakes", code: "rfvtgbyhn", value_off: 30, percent_off: true, active: false, merchant_id: 4)
 Coupon.create(name: "Fall Sale", code: "qazwsxedc", value_off: 65, percent_off: false, active: true, merchant_id: 5)
@@ -27,3 +27,11 @@ Coupon.create(name: "Winter Sale", code: "bgtnhymju", value_off: 25, percent_off
 Coupon.create(name: "Spring Sale", code: "8765ryui", value_off: 15, percent_off: false, active: false, merchant_id: 5)
 Coupon.create(name: "Birthday Special", code: "plkmmklp", value_off: 50, percent_off: true, active: true, merchant_id: 5)
 Coupon.create(name: "Birthday Special", code: "hghgffjjhghg", value_off: 50, percent_off: true, active: true, merchant_id: 5)
+
+Invoice.create( customer_id: 1, merchant_id: 1, coupon_id: coupon1.id, status: "shipped" )
+
+Invoice.create( customer_id: 1, merchant_id: 1, coupon_id: coupon2.id, status: "shipped" )
+
+Invoice.create( customer_id: 1, merchant_id: 2, coupon_id: coupon4.id, status: "shipped" )
+
+Invoice.create( customer_id: 1, merchant_id: 3, coupon_id: coupon6.id, status: "shipped" )
