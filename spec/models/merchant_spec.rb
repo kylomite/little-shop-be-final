@@ -9,6 +9,7 @@ describe Merchant, type: :model do
     it { should have_many :items }
     it { should have_many :invoices }
     it { should have_many(:customers).through(:invoices) }
+    it { should have_many :coupons }
   end
 
   describe "class methods" do
@@ -87,7 +88,7 @@ describe Merchant, type: :model do
       expect(merchant.invoices_filtered_by_status("returned")).to eq([inv_5_returned])
       expect(other_merchant.invoices_filtered_by_status("packaged")).to eq([inv_4_packaged])
     end
-    
+
     describe "#coupon_count" do
       it "returns a count for all the coupons for a given merchant" do
         merchant = create(:merchant)

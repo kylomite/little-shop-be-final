@@ -2,11 +2,15 @@ require "rails_helper"
 
 RSpec.describe Coupon do
     describe "validations" do
-
+        it { should validate_presence_of(:name) }
+        it { should validate_presence_of(:code) }
+        it { should validate_presence_of(:value_off) }
+        it { should validate_presence_of(:use_count) }
+        it { should validate_presence_of(:merchant_id) }
     end
 
     describe "relationships" do
-
+        it { should have_many :invoices }
     end
     describe "Instance methods" do
         describe "#toggle_active" do
@@ -33,6 +37,24 @@ RSpec.describe Coupon do
             active_coupon.toggle_active
 
             expect(active_coupon.active).to eq(true)
+        end
+        describe "#max_active_coupons" do
+            it "does not allow for more than 5 active coupons" do
+                merchant = Merchant.create(name: "test merchant")
+
+                coupon1 = Coupon.create(name: "Summer Sale", code: "12345", value_off: 15, percent_off: true, active: true, merchant_id: merchant.id)
+                coupon2 = Coupon.create(name: "Sweepstakes", code: "qwerty", value_off: 30, percent_off: true, active: true, merchant_id: merchant.id)
+                coupon3 = Coupon.create(name: "Fall Sale", code: "asdfg", value_off: 65, percent_off: false, active: true, merchant_id: merchant.id)
+                coupon4 = Coupon.create(name: "Winter Sale", code: "zxcvb", value_off: 25, percent_off: true, active: true, merchant_id: merchant.id)
+                coupon5 = Coupon.create(name: "Spring Sale", code: "poiuy", value_off: 15, percent_off: false, active: true, merchant_id: merchant.id)
+
+                coupon6 = Coupon.create(name: "New Coupon", code: "NEW123", value_off: 5, percent_off: false, active: true, merchant_id: merchant.id)
+
+                expect(coupon6.valid?).to be_falsey
+                expect(coupon6.errors[:base]).to include('Merchant can have a maximum of 5 active coupons.')
+            end
+
+
         end
     end
     end

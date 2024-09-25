@@ -2,7 +2,7 @@ class Api::V1::Merchants::CouponsController < ApplicationController
     def index
         merchant = Merchant.find(params[:merchant_id])
         coupons = merchant.coupons
-        if params[:sort] == "active" || params[:sort] == "inactive"
+        if params[:sort]
             coupons = merchant.coupons.sorted_by_active(params[:sort])
         else
             coupons = merchant.coupons
@@ -16,8 +16,12 @@ class Api::V1::Merchants::CouponsController < ApplicationController
     end
 
     def create
-        new_coupon = Coupon.create!(coupon_params)
-        render json: CouponSerializer.new(new_coupon).serializable_hash.to_json, status: 201
+        begin
+            new_coupon = Coupon.create!(coupon_params)
+            render json: CouponSerializer.new(new_coupon).serializable_hash.to_json, status: 201
+        rescue StandardError => exception
+            render json: ErrorSerializer.format_errors([exception.message]), status: :bad_request 
+        end
     end
 
     def update

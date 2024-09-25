@@ -24,7 +24,7 @@ Coupon.create(name: "Summer Sale", code: "mnbvc", value_off: 15, percent_off: tr
 Coupon.create(name: "Sweepstakes", code: "rfvtgbyhn", value_off: 30, percent_off: true, active: false, merchant_id: 4)
 Coupon.create(name: "Fall Sale", code: "qazwsxedc", value_off: 65, percent_off: false, active: true, merchant_id: 5)
 Coupon.create(name: "Winter Sale", code: "bgtnhymju", value_off: 25, percent_off: true, active: true, merchant_id: 5)
-Coupon.create(name: "Spring Sale", code: "8765ryui", value_off: 15, percent_off: false, active: false, merchant_id: 5)
+Coupon.create(name: "Spring Sale", code: "8765ryui", value_off: 15, percent_off: false, active: true, merchant_id: 5)
 Coupon.create(name: "Birthday Special", code: "plkmmklp", value_off: 50, percent_off: true, active: true, merchant_id: 5)
 Coupon.create(name: "Birthday Special", code: "hghgffjjhghg", value_off: 50, percent_off: true, active: true, merchant_id: 5)
 

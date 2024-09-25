@@ -20,7 +20,6 @@ describe "Coupon endpoints", :type => :request do
         @coupon11 = Coupon.create(name: "Spring Sale", code: "8765ryui", value_off: 15, percent_off: false, active: false, merchant_id: @merchants_list[4].id)
         @coupon12 = Coupon.create(name: "Birthday Special", code: "plkmmklp", value_off: 50, percent_off: true, active: true, merchant_id: @merchants_list[4].id)
         @coupon13 = Coupon.create(name: "Birthday Special", code: "hghgffjjhghg", value_off: 50, percent_off: true, active: true, merchant_id: @merchants_list[4].id)
-        @coupon_list = [@coupon1, @coupon2, @coupon3, @coupon4, @coupon5, @coupon6, @coupon7, @coupon8, @coupon9, @coupon10, @coupon11, @coupon12, @coupon13]
     end
 
     describe "#index" do
@@ -133,7 +132,43 @@ describe "Coupon endpoints", :type => :request do
         end
 
         describe "SAD path" do
-            
+            it 'returns rescue response when creating a coupon for a merchant with 5 active coupons' do
+                
+                coupon5_params = {
+                    name: "test name",
+                    code: "unique test code",
+                    value_off: 15,
+                    percent_off: false,
+                    active: true,
+                    merchant_id: @merchants_list[4].id,
+                    use_count: 4
+                }
+
+                coupon6_params = {
+                    name: "test name",
+                    code: "bebop maroo",
+                    value_off: 15,
+                    percent_off: false,
+                    active: true,
+                    merchant_id: @merchants_list[4].id,
+                    use_count: 4
+                }
+
+                headers = { "CONTENT_TYPE" => "application/json" }
+
+                post "/api/v1/merchants/#{@merchants_list[4].id}/coupons", headers: headers, params: { coupon: coupon5_params }.to_json
+
+                expect(response.status).to eq(201)
+
+                post "/api/v1/merchants/#{@merchants_list[4].id}/coupons", headers: headers, params: { coupon: coupon6_params }.to_json
+        
+                expect(response.status).to eq(400)
+
+                error_message = JSON.parse(response.body, symbolize_names: true)
+
+                expect(error_message[:message]).to eq("Your query could not be completed")
+                expect(error_message[:errors]).to eq(["Validation failed: Merchant can have a maximum of 5 active coupons."])
+            end
         end
     end
 
